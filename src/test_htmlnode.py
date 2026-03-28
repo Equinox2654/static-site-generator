@@ -32,7 +32,7 @@ class TestTextNode(unittest.TestCase):
 
     def test_leafnode_3(self):
         node = LeafNode(tag="p", value="Hello World", props={"href": "https://github.com"})
-        self.assertEqual(node.to_html(), "<p href=https://github.com>Hello World</p>")
+        self.assertEqual(node.to_html(), '<p href="https://github.com">Hello World</p>')
 
 if __name__ == "__main__":
     unittest.main()
