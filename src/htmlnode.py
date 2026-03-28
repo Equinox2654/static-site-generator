@@ -17,6 +17,9 @@ class HTMLNode():
         string = ''
         if self.props:
             for prop in self.props:
-                string = f'{string} {prop}="{self.props[prop]}"'
+                if string == '':
+                    string = f'{prop}="{self.props[prop]}"'
+                else:
+                    string = f'{string} {prop}="{self.props[prop]}"'
             return string
         return string
