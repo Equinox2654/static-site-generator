@@ -1,3 +1,4 @@
+from textnode import TextNode, TextType
 
 class HTMLNode():
 
@@ -58,3 +59,18 @@ class ParentNode(HTMLNode):
         for child in self.children:
             html = f'{html}{child.to_html()}'
         return f'<{self.tag}>{html}</{self.tag}>'
+
+def text_node_to_html_node(text_node: TextNode):
+    match text_node.text_type:
+        case TextType.BOLD:
+            return LeafNode(tag='b', value=text_node.text)
+        case TextType.ITALIC:
+            return LeafNode(tag='i', value=text_node.text)
+        case TextType.TEXT:
+            return LeafNode(tag=None, value=text_node.text)
+        case TextType.IMAGE:
+            return LeafNode(tag='img', value=text_node.text, props={'href': 'https://localhost:8888'})
+        case TextType.LINK:
+            return LeafNode(tag='a', value=text_node.text, props={'href': 'https://github.com'})
+        case TextType.CODE:
+            return LeafNode(tag='code', value=text_node.text)
