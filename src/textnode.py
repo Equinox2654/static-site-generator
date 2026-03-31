@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Text
 
 class TextType(Enum):
     TEXT = 'Plain text',
@@ -27,3 +28,19 @@ class TextNode():
     def __repr__(self) -> str:
         return f'TextNode({self.text}, {self.text_type}, {self.url})'
 
+def split_nodes_delimiter(old_nodes: list[TextNode], delimiter: str, text_type: TextType):
+    return_list = []
+    for node in old_nodes:
+        if node.text_type != TextType.TEXT:
+            return_list.append(node)
+        new_text: list[str] = node.text.split(delimiter)
+        if len(new_text) % 2 == 0:
+            raise Exception(f"No closing Delimiter Found in node {node}")
+        for i in range(len(new_text)):
+            if new_text[i] == '':
+                continue
+            if i % 2 == 0:
+                return_list.append(TextNode(text=new_text[i], text_type=TextType.TEXT))
+            else:
+                return_list.append(TextNode(text=new_text[i], text_type=text_type))
+    return return_list
