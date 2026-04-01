@@ -41,7 +41,6 @@ class test_spit_node_delimiter(unittest.TestCase):
             TextNode(text='**Hello** World', text_type=TextType.TEXT),
         ]
         new_nodes = split_nodes_delimiter(text_nodes, '**', TextType.BOLD)
-        print(new_nodes)
         self.assertEqual(
             new_nodes,
             [
