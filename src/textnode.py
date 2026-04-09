@@ -1,5 +1,6 @@
 from enum import Enum
 from typing import Text
+from markdown_to_tuple import extract_markdown_images, extract_markdown_links
 
 class TextType(Enum):
     TEXT = 'Plain text',
@@ -43,4 +44,33 @@ def split_nodes_delimiter(old_nodes: list[TextNode], delimiter: str, text_type: 
                 return_list.append(TextNode(text=new_text[i], text_type=TextType.TEXT))
             else:
                 return_list.append(TextNode(text=new_text[i], text_type=text_type))
+    return return_list
+
+def split_nodes_image(old_nodes: list[TextNode]):
+    return_list = []
+    for old_node in old_nodes:
+        if old_node.text_type != TextType.TEXT:
+            return_list.append(old_node)
+            continue
+        og_text = old_node.text
+        images = extract_markdown_images(og_text)
+        if len(images) == 0:
+            return_list.append(old_node)
+            continue
+        for image in images:
+            sections = og_text.split(f'![{image[0]}]({image[1]})', 1)
+            if len(sections) != 2:
+                raise Exception("Invalid Markdown. Incorrect image format.")
+            if sections[0] != "":
+                return_list.append(TextNode(text=sections[0], text_type=TextType.TEXT))
+            return_list.append(
+                TextNode(
+                    text=image[0],
+                    text_type=TextType.IMAGE,
+                    url=image[1]
+                )
+            )
+            og_text = sections[1]
+        if og_text != "":
+            return_list.append(TextNode(text=og_text, text_type=TextType.TEXT))
     return return_list
