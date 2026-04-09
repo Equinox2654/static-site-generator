@@ -74,3 +74,30 @@ def split_nodes_image(old_nodes: list[TextNode]):
         if og_text != "":
             return_list.append(TextNode(text=og_text, text_type=TextType.TEXT))
     return return_list
+
+def split_nodes_link(old_nodes: list[TextNode]):
+    return_list = []
+    for old_node in old_nodes:
+        if old_node.text_type != TextType.TEXT:
+            return_list.append(old_node)
+            continue
+        og_text = old_node.text
+        links = extract_markdown_links(og_text)
+        if len(links) == 0:
+            return_list.append(old_node)
+            continue
+        for link in links:
+            sections = og_text.split(f'[{link[0]}]({link[1]})', 1)
+            if len(sections) != 2:
+                raise Exception("Invalid Markdown. Incorrect Link Format")
+            if sections[0] != "":
+                return_list.append(TextNode(text=sections[0], text_type=TextType.TEXT))
+            return_list.append(TextNode(
+                text=link[0],
+                text_type=TextType.LINK,
+                url=link[1]
+            ))
+            og_text = sections[1]
+        if og_text != "":
+            return_list.append(TextNode(text=og_text, text_type=TextType.TEXT))
+    return return_list
