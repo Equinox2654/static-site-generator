@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import Text
 from markdown_to_tuple import extract_markdown_images, extract_markdown_links
 
 class TextType(Enum):
@@ -34,6 +33,7 @@ def split_nodes_delimiter(old_nodes: list[TextNode], delimiter: str, text_type: 
     for node in old_nodes:
         if node.text_type != TextType.TEXT:
             return_list.append(node)
+            continue
         new_text: list[str] = node.text.split(delimiter)
         if len(new_text) % 2 == 0:
             raise Exception(f"No closing Delimiter Found in node {node}")
@@ -101,3 +101,15 @@ def split_nodes_link(old_nodes: list[TextNode]):
         if og_text != "":
             return_list.append(TextNode(text=og_text, text_type=TextType.TEXT))
     return return_list
+
+def text_to_textnodes(text):
+    og_node = TextNode(text=text, text_type=TextType.TEXT)
+    node_list = []
+
+    node_list = split_nodes_delimiter([og_node], '**', TextType.BOLD)
+    node_list = split_nodes_delimiter(node_list, '_', TextType.ITALIC)
+    node_list = split_nodes_delimiter(node_list, '`', TextType.CODE)
+    node_list = split_nodes_image(node_list)
+    node_list = split_nodes_link(node_list)
+
+    return node_list
