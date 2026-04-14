@@ -1,7 +1,6 @@
-import textnode
+import static_to_public
 
 def main():
-    node = textnode.TextNode("Hello", textnode.TextType.BOLD)
-    print(node)
+    static_to_public.copy_to_new_dir('/home/thibi/Workspaces/bootdotdev/static-site-generator/static/', '/home/thibi/Workspaces/bootdotdev/static-site-generator/public/')
 
 main()
