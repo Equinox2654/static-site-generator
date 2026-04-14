@@ -27,15 +27,15 @@ class HTMLNode():
 
 class LeafNode(HTMLNode):
 
-    def __init__(self, tag, value, props=None) -> None:
+    def __init__(self, tag, value='', props=None) -> None:
         super().__init__(tag = tag, value = value, props = props)
 
     def __repr__(self) -> str:
         return f'LeafNode({self.tag}, {self.value}, {self.props})'
 
     def to_html(self):
-        if not self.value:
-            raise ValueError("No Value Provided.")
+        if not self.value and self.tag:
+            return f'<{self.tag} {self.props_to_html()}>'
         if self.props:
             return f'<{self.tag} {self.props_to_html()}>{self.value}</{self.tag}>'
         if self.tag:
@@ -69,8 +69,8 @@ def text_node_to_html_node(text_node: TextNode):
         case TextType.TEXT:
             return LeafNode(tag=None, value=text_node.text)
         case TextType.IMAGE:
-            return LeafNode(tag='img', value=text_node.text, props={'href': 'https://localhost:8888'})
+            return LeafNode(tag='img', value='', props={'src': text_node.url, 'alt': text_node.text})
         case TextType.LINK:
-            return LeafNode(tag='a', value=text_node.text, props={'href': 'https://github.com'})
+            return LeafNode(tag='a', value=text_node.text, props={'href': text_node.url})
         case TextType.CODE:
             return LeafNode(tag='code', value=text_node.text)
