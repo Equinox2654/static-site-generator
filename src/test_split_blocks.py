@@ -1,5 +1,5 @@
 import unittest
-from split_blocks import markdown_to_blocks, BlockType, block_to_block_type, markdown_to_html_node
+from split_blocks import markdown_to_blocks, BlockType, block_to_block_type, markdown_to_html_node, extract_title
 
 class test_split_blocks(unittest.TestCase):
 
@@ -240,6 +240,22 @@ And here is an image ![image](https://boot.dev)
             html,
             '<div><h1>Title</h1><p>This is some <b>interesting</b> <i>text</i> with a <a href="https://boot.dev">link</a>.</p><code>Here is some code</code><p>And here is an image <img src="https://boot.dev" alt="image"></p></div>'
         )
+
+    def test_extract_title_1(self):
+        md = """
+# Hello
+## he
+        """
+        header = extract_title(md)
+        self.assertEqual(header, "Hello")
+
+    def test_extract_title_2(self):
+        md = """
+#Hello
+        """
+
+        with self.assertRaises(Exception):
+            extract_title(md)
 
 if __name__ == "__main__":
     unittest.main()

@@ -51,7 +51,6 @@ def parse_text(text: str):
     nodes = []
     for text_node in text_nodes:
         nodes.append(text_node_to_html_node(text_node))
-    print(nodes)
     return nodes
 
 def text_to_children(text: str):
@@ -109,3 +108,9 @@ def text_to_children(text: str):
                     leaf_nodes.append(ParentNode(tag='li', children=leaf_leaf_nodes))
                 nodes.append(ParentNode(tag='ol', children=leaf_nodes))
     return nodes
+
+def extract_title(markdown):
+    if not re.search(r'^# ', markdown, re.MULTILINE):
+        raise Exception("No Title Found")
+    header = re.findall(r'^# .*', markdown, re.MULTILINE)
+    return header[0].strip('# ').strip()
