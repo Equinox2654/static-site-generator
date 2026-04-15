@@ -1,8 +1,9 @@
 from enum import Enum
 import re
 from htmlnode import ParentNode, LeafNode, text_node_to_html_node 
-from textnode import text_to_textnodes, TextNode, TextType
+from textnode import text_to_textnodes
 import re
+from os import mkdir, path
 
 class BlockType(Enum):
     PARAGRAPH = 'paragraph',
@@ -114,3 +115,23 @@ def extract_title(markdown):
         raise Exception("No Title Found")
     header = re.findall(r'^# .*', markdown, re.MULTILINE)
     return header[0].strip('# ').strip()
+
+def generate_page(from_path, template_path, dest_path):
+    print(f'Generating page from {from_path} to {dest_path} using {template_path}')
+    with open(from_path) as f:
+        md = f.read()
+        f.close()
+    with open(template_path) as f:
+        template = f.read()
+        f.close()
+    html_node = markdown_to_html_node(md)
+    html = html_node.to_html()
+    title = extract_title(md)
+    final = template.replace('{{ Title }}', title)
+    final = final.replace('{{ Content }}', html)
+    if not path.exists(dest_path):
+        mkdir(dest_path)
+    file_path = path.join(dest_path, 'index.html')
+    with open(file_path, 'w+') as f:
+        f.write(final)
+        f.close()
